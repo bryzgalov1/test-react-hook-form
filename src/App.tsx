@@ -1,26 +1,44 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useMemo, useState } from 'react';
+import TestForm, { TValues } from './TestForm';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [countInputs, setCountInputs] = useState(10);
+
+    const values: TValues = useMemo(() => {
+        const data: TValues = [...(new Array(countInputs))].reduce((acc, _, index) => {
+            const key = `field--${index}`;
+            return {
+                ...acc,
+                [key]: `${index}`,
+            };
+        }, {});
+
+        return data
+    }, [
+        countInputs,
+    ]);
+
+    return (
+        <div className="App">
+            <div className="App__count">
+                <span>countInputs: </span>
+                <input
+                    type='number'
+                    value={countInputs}
+                    onChange={(event) => {
+                        const value = +event.target.value;
+                        if (value > 1000) {
+                            alert('Max 1000 !');
+                        } else {
+                            setCountInputs(value);
+                        }
+                    }}
+                />
+            </div>
+
+            <TestForm values={values} key={countInputs} />
+        </div>
+    );
 }
 
 export default App;
